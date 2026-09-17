@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:questions": "node scripts/import-questions.mjs",
+    "validate:questions": "npm run import:questions && node scripts/validate-questions.mjs"
   },
   "dependencies": {
     "next": "16.3.5",

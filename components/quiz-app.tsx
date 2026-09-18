@@ -10,7 +10,7 @@ type Screen = "home" | "setup" | "play" | "results" | "review" | "stats" | "hist
 const allDifficulties: Difficulty[] = ["Easy", "Medium", "Hard", "Extreme"];
 const allTypes: QuestionType[] = [...new Set(questions.map((question) => question.questionType))];
 const typeNameMap: Record<string, string> = { direct_fact: "Direct fact", true_false: "True / False", short_answer: "Short answer", reference_lookup: "Reference identification", statement_match: "Statement match", pair_match: "Correct pairing", true_false_swapped: "Swapped reference", dual_reference: "Dual reference", verse_precision: "Exact verse", triple_reference_match: "Triple reference match" };
-const initialConfig: QuizConfiguration = { books, chapters, difficulties: allDifficulties, questionTypes: allTypes, count: 20, mode: "practice", avoidFactRepeats: true };
+const initialConfig: QuizConfiguration = { books, chapters: chapters.filter((chapter) => chapter >= 1 && chapter <= 5), difficulties: allDifficulties, questionTypes: allTypes, count: 20, mode: "practice", avoidFactRepeats: true };
 
 function readAttempts(): Attempt[] { try { return JSON.parse(localStorage.getItem("lampstand-attempts") ?? "[]") as Attempt[]; } catch { return []; } }
 function writeAttempts(attempts: Attempt[]) { localStorage.setItem("lampstand-attempts", JSON.stringify(attempts)); }

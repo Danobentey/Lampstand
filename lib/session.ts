@@ -48,3 +48,10 @@ export function readHistory() {
   if (typeof window === "undefined") return [] as QuizSession[];
   try { return JSON.parse(localStorage.getItem(historyKey) ?? "[]") as QuizSession[]; } catch { return []; }
 }
+
+export function readSessionById(id: string) {
+  const session = readHistory().find((item) => item.id === id);
+  if (session) return session;
+  const lastSession = readLastSession();
+  return lastSession?.id === id ? lastSession : null;
+}

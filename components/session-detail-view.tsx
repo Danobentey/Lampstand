@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { questions } from "../lib/questions";
-import { readSessionById, QuizSession } from "../lib/session";
+import { createRetakeSession, readSessionById, saveSession, QuizSession } from "../lib/session";
 import SiteHeader from "./site-header";
 
 export default function SessionDetailView({ sessionId }: { sessionId: string }) {
+  const router = useRouter();
   const [session, setSession] = useState<QuizSession | null>(null);
 
   useEffect(() => {
@@ -21,6 +23,13 @@ export default function SessionDetailView({ sessionId }: { sessionId: string }) 
   const correct = session?.attempts.filter((attempt) => attempt.correct).length ?? 0;
   const total = session?.questionIds.length ?? 0;
 
+  function retake() {
+    if (!session) return;
+    const retakeSession = createRetakeSession(session);
+    saveSession(retakeSession);
+    router.push(`/quiz/play?sessionId=${retakeSession.id}`);
+  }
+
   return <div className="min-h-screen bg-[#f5f1e8]">
     <SiteHeader />
     <main className="mx-auto max-w-6xl px-5 py-8 md:px-10 md:py-12">
@@ -29,6 +38,7 @@ export default function SessionDetailView({ sessionId }: { sessionId: string }) 
         <p className="mt-8 text-xs font-semibold uppercase tracking-[.18em] text-[#6e756c]">{session.configuration.books.join(", ")} · {session.configuration.mode}</p>
         <h1 className="serif mt-2 text-4xl md:text-5xl">{new Date(session.startedAt).toLocaleString()}</h1>
         <p className="mt-3 text-[#6e756c]">{correct} of {total} correct · {total ? Math.round(correct / total * 100) : 0}%</p>
+        <button onClick={retake} className="mt-6 rounded-lg bg-[#275844] px-5 py-3 font-semibold text-white">Retake exact quiz →</button>
         <section className="mt-8 divide-y divide-[#ded8ca] border-y border-[#ded8ca]">
           {questionRows.map(({ question, attempt }, index) => <article key={question.questionId} className="grid gap-4 py-6 md:grid-cols-[3rem_1fr_auto] md:gap-6">
             <p className="text-xs font-semibold uppercase tracking-[.12em] text-[#6e756c]">{String(index + 1).padStart(2, "0")}</p>

@@ -19,6 +19,10 @@ export function createSession(configuration: QuizConfiguration, quiz: Question[]
   return { id: `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, startedAt: new Date().toISOString(), configuration, questionIds: quiz.map((question) => question.questionId), currentIndex: 0, attempts: [] };
 }
 
+export function createRetakeSession(session: QuizSession): QuizSession {
+  return { id: `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, startedAt: new Date().toISOString(), configuration: session.configuration, questionIds: [...session.questionIds], currentIndex: 0, attempts: [] };
+}
+
 export function saveSession(session: QuizSession) {
   if (typeof window !== "undefined") localStorage.setItem(key, JSON.stringify(session));
 }
